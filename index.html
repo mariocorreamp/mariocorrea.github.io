@@ -43,7 +43,7 @@ h3{font-size:clamp(1.3rem,2vw,1.6rem);}
 .divider--center{margin:2rem auto;}
 
 /* FADE-IN ANIMATION */
-.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.5s ease,transform 0.5s ease;}
 .reveal.visible{opacity:1;transform:translateY(0);}
 
 /* ─── HERO ─── */
@@ -480,6 +480,9 @@ footer p{font-size:0.75rem;color:rgba(168,164,158,0.4);}
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Make all elements visible immediately
+window.addEventListener('DOMContentLoaded',function(){document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('visible');});});
+// Observer for scroll animations
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if(e.isIntersecting){
