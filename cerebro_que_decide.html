@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Cerebro que Decide — Mario Correa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#05101E;
+  --navy2:#071525;
+  --navy3:#091A2E;
+  --navy4:#0C1F35;
+  --teal:#0FB5AE;
+  --teal2:#14D0C8;
+  --teal3:#7EEAE6;
+  --gold:#C49A3C;
+  --gold2:#DEB86A;
+  --cream:#EEF0F4;
+  --muted:#8A96A8;
+  --border:rgba(15,181,174,0.18);
+  --border-gold:rgba(196,154,60,0.2);
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'Syne',system-ui,sans-serif;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--navy);color:var(--cream);font-family:var(--font-sans);font-size:16px;line-height:1.7;overflow-x:hidden;}
+
+/* ── TYPOGRAPHY ── */
+h1,h2,h3{font-family:var(--font-serif);font-weight:500;line-height:1.15;}
+h1{font-size:clamp(3rem,5.5vw,5rem);}
+h2{font-size:clamp(2rem,3.5vw,3.2rem);}
+h3{font-size:clamp(1.2rem,2vw,1.55rem);}
+.eyebrow{font-family:var(--font-sans);font-size:0.68rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem;display:block;}
+.teal{color:var(--teal2);}
+.gold-text{color:var(--gold2);}
+.italic{font-style:italic;}
+
+/* ── LAYOUT ── */
+.section{padding:7rem 2rem;}
+.container{max-width:1120px;margin:0 auto;}
+.container--narrow{max-width:800px;margin:0 auto;}
+.divider{width:60px;height:1px;background:linear-gradient(90deg,var(--teal),transparent);margin:2rem 0;}
+.divider--center{margin:2rem auto;}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.85s ease,transform 0.85s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.35;
+}
+body>*{position:relative;z-index:1;}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+#hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:stretch;
+  gap:0;
+  position:relative;
+  overflow:hidden;
+  padding:0;
+}
+/* Teal glow left */
+#hero::before{
+  content:'';position:absolute;
+  width:600px;height:600px;
+  left:-150px;top:50%;transform:translateY(-50%);
+  background:radial-gradient(circle,rgba(15,181,174,0.09) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.hero__content{
+  padding:8rem clamp(2.5rem,5vw,5rem) 7rem clamp(2rem,6vw,6rem);
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.hero__badge{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:2.5rem;
+}
+.hero__badge-line{width:28px;height:1px;background:var(--teal);}
+.hero__badge span{
+  font-family:var(--font-sans);font-size:0.68rem;font-weight:600;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--teal);
+}
+.hero__title{margin-bottom:1.8rem;position:relative;}
+.hero__title .line1{display:block;font-weight:400;}
+.hero__title .line2{
+  display:block;font-style:italic;
+  background:linear-gradient(135deg,var(--teal2) 0%,var(--teal3) 50%,var(--gold2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero__subtitle{
+  font-size:1.05rem;color:var(--muted);max-width:440px;
+  margin-bottom:2.5rem;line-height:1.85;
+  font-family:var(--font-sans);font-weight:400;
+}
+.hero__rating{
+  display:inline-flex;align-items:center;gap:12px;
+  background:rgba(15,181,174,0.07);
+  border:1px solid var(--border);
+  padding:0.75rem 1.4rem;
+  margin-bottom:3rem;
+}
+.hero__rating-stars{color:var(--teal);font-size:0.9rem;letter-spacing:3px;}
+.hero__rating-text{font-size:0.78rem;color:var(--muted);}
+.hero__rating-text strong{color:var(--cream);font-weight:600;}
+.hero__cta{
+  display:inline-flex;align-items:center;gap:12px;
+  background:var(--teal);color:#05101E;
+  font-family:var(--font-sans);font-size:0.8rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:1.1rem 2.2rem;text-decoration:none;
+  transition:background 0.2s,transform 0.2s;
+  width:fit-content;
+}
+.hero__cta:hover{background:var(--teal2);transform:translateY(-2px);}
+.hero__cta-arrow{transition:transform 0.2s;}
+.hero__cta:hover .hero__cta-arrow{transform:translateX(5px);}
+
+/* Hero right: abstract brain visual */
+.hero__visual{
+  position:relative;overflow:hidden;
+  background:var(--navy2);
+  display:flex;align-items:center;justify-content:center;
+}
+.hero__visual::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,var(--navy) 0%,rgba(5,16,30,0.2) 30%,transparent 100%);
+  z-index:2;
+}
+.hero__visual::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:180px;
+  background:linear-gradient(to top,var(--navy),transparent);
+  z-index:3;
+}
+.hero__neural{
+  position:absolute;inset:0;
+  z-index:1;
+}
+.hero__5x{
+  position:relative;z-index:4;
+  font-family:var(--font-serif);
+  font-size:clamp(8rem,14vw,16rem);
+  font-weight:600;
+  font-style:italic;
+  line-height:1;
+  background:linear-gradient(160deg,rgba(15,181,174,0.15) 0%,rgba(20,208,200,0.08) 40%,rgba(126,234,230,0.04) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 60px rgba(15,181,174,0.2));
+  pointer-events:none;
+  user-select:none;
+}
+.hero__5x-label{
+  position:absolute;z-index:4;
+  bottom:3rem;left:50%;transform:translateX(-50%);
+  font-size:0.65rem;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;
+  color:rgba(15,181,174,0.4);
+  white-space:nowrap;
+}
+
+/* ══════════════════════════════════════
+   LOGOS
+══════════════════════════════════════ */
+#logos{
+  padding:2.5rem 2rem;
+  border-top:1px solid rgba(15,181,174,0.1);
+  border-bottom:1px solid rgba(15,181,174,0.1);
+  background:var(--navy2);
+}
+.logos__inner{max-width:1120px;margin:0 auto;display:flex;align-items:center;flex-wrap:wrap;gap:0;}
+.logos__label{
+  font-size:0.65rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--muted);padding-right:2.5rem;
+  border-right:1px solid rgba(15,181,174,0.15);margin-right:2.5rem;white-space:nowrap;
+}
+.logos__list{display:flex;gap:2.5rem;align-items:center;flex-wrap:wrap;}
+.logos__item{
+  font-family:var(--font-serif);font-size:1rem;
+  color:rgba(238,240,244,0.28);letter-spacing:0.04em;
+  transition:color 0.3s;
+}
+.logos__item:hover{color:rgba(238,240,244,0.6);}
+
+/* ══════════════════════════════════════
+   DIAGNÓSTICO
+══════════════════════════════════════ */
+#diagnostico{background:var(--navy3);}
+.diag__grid{display:grid;grid-template-columns:5fr 7fr;gap:6rem;align-items:center;}
+.diag__left{}
+.diag__quote{
+  font-family:var(--font-serif);
+  font-size:clamp(1.8rem,2.8vw,2.4rem);
+  font-style:italic;color:var(--cream);
+  line-height:1.45;
+  padding-left:1.5rem;
+  border-left:2px solid var(--teal);
+  margin-bottom:3rem;
+}
+.diag__stat{padding:2rem 0;border-top:1px solid var(--border);}
+.diag__stat-number{
+  font-family:var(--font-serif);
+  font-size:clamp(3rem,5vw,4.5rem);
+  color:var(--teal2);line-height:1;margin-bottom:0.4rem;
+}
+.diag__stat-label{font-size:0.82rem;color:var(--muted);max-width:260px;line-height:1.6;}
+.diag__body{font-size:1.05rem;color:var(--muted);line-height:1.95;margin-bottom:1.5rem;}
+.diag__body strong{color:var(--cream);font-weight:600;}
+
+/* ══════════════════════════════════════
+   SISTEMA 5x — MÓDULOS
+══════════════════════════════════════ */
+#modulos{}
+.modulos__header{text-align:center;margin-bottom:5rem;}
+.modulos__subtitle{max-width:620px;margin:1.5rem auto 0;color:var(--muted);font-size:1rem;line-height:1.8;}
+
+/* Módulos: layout asimétrico tipo timeline */
+.modulos__list{display:flex;flex-direction:column;gap:0;}
+.modulo{
+  display:grid;
+  grid-template-columns:80px 1fr;
+  gap:0;
+  border-bottom:1px solid rgba(15,181,174,0.1);
+  position:relative;
+  transition:background 0.3s;
+}
+.modulo:first-child{border-top:1px solid rgba(15,181,174,0.1);}
+.modulo:hover{background:rgba(15,181,174,0.03);}
+.modulo__num-col{
+  padding:3rem 0;
+  display:flex;align-items:flex-start;justify-content:center;
+  border-right:1px solid rgba(15,181,174,0.1);
+  position:relative;
+}
+.modulo__num{
+  font-family:var(--font-serif);
+  font-size:1.1rem;font-weight:600;
+  color:var(--teal);
+  margin-top:0.2rem;
+}
+/* Vertical progress line */
+.modulo__num-col::before{
+  content:'';position:absolute;
+  top:0;bottom:0;
+  left:50%;transform:translateX(-50%);
+  width:1px;
+  background:linear-gradient(to bottom,transparent 0%,rgba(15,181,174,0.3) 30%,rgba(15,181,174,0.3) 70%,transparent 100%);
+  z-index:-1;
+}
+.modulo__content{padding:3rem 3rem;}
+.modulo__tag{
+  font-size:0.62rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--teal);margin-bottom:0.7rem;
+}
+.modulo__title{margin-bottom:0.8rem;font-size:clamp(1.2rem,1.8vw,1.45rem);}
+.modulo__desc{color:var(--muted);font-size:0.95rem;line-height:1.85;}
+.modulo__desc strong{color:var(--cream);}
+
+/* Módulo 5 especial */
+.modulo--synergy{
+  background:linear-gradient(90deg,rgba(15,181,174,0.06) 0%,transparent 60%);
+}
+.modulo--synergy .modulo__num{
+  background:linear-gradient(135deg,var(--teal2),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  font-size:1.3rem;
+}
+.modulo--synergy .modulo__title{
+  background:linear-gradient(135deg,var(--cream) 0%,var(--teal3) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ══════════════════════════════════════
+   DIFERENCIADORES
+══════════════════════════════════════ */
+#diferenciadores{background:var(--navy2);}
+.dif__header{text-align:center;margin-bottom:5rem;}
+.dif__grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:1.5px;
+  background:rgba(15,181,174,0.1);
+}
+.dif__item{
+  background:var(--navy2);
+  padding:3rem 2.5rem;
+  position:relative;
+  overflow:hidden;
+  transition:background 0.3s;
+}
+.dif__item:hover{background:var(--navy3);}
+.dif__item::after{
+  content:'';position:absolute;
+  top:0;left:0;width:0;height:2px;
+  background:var(--teal);
+  transition:width 0.4s ease;
+}
+.dif__item:hover::after{width:100%;}
+.dif__icon{
+  font-family:var(--font-serif);
+  font-size:3.5rem;color:rgba(15,181,174,0.1);
+  font-weight:600;line-height:1;
+  position:absolute;top:1.5rem;right:2rem;
+}
+.dif__label{
+  font-size:0.62rem;font-weight:700;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:1rem;
+}
+.dif__title{font-size:1.25rem;margin-bottom:0.8rem;}
+.dif__desc{color:var(--muted);font-size:0.93rem;line-height:1.8;}
+
+/* ══════════════════════════════════════
+   ROI
+══════════════════════════════════════ */
+#roi{background:var(--navy4);}
+.roi__header{text-align:center;margin-bottom:5rem;}
+.roi__source{font-size:0.72rem;color:rgba(15,181,174,0.45);margin-top:0.5rem;}
+.roi__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(15,181,174,0.1);}
+.roi__item{background:var(--navy4);padding:4.5rem 2.5rem;text-align:center;position:relative;overflow:hidden;}
+.roi__item::before{
+  content:'';position:absolute;
+  bottom:0;left:50%;transform:translateX(-50%);
+  width:40px;height:2px;
+  background:var(--teal);
+  opacity:0.4;
+}
+.roi__number{
+  font-family:var(--font-serif);
+  font-size:clamp(3rem,5vw,5rem);
+  color:var(--teal2);
+  line-height:1;margin-bottom:0.8rem;
+}
+.roi__label{font-size:0.8rem;font-weight:600;letter-spacing:0.08em;color:var(--cream);text-transform:uppercase;margin-bottom:0.3rem;}
+.roi__sublabel{font-size:0.72rem;color:var(--muted);line-height:1.5;}
+
+/* ══════════════════════════════════════
+   SPEAKER
+══════════════════════════════════════ */
+#speaker{background:var(--navy);}
+.speaker__grid{display:grid;grid-template-columns:5fr 7fr;gap:7rem;align-items:center;}
+.speaker__image-wrap{position:relative;}
+/* Teal corner accent instead of gold */
+.speaker__image-wrap::before{
+  content:'';position:absolute;
+  top:-10px;left:-10px;right:10px;bottom:10px;
+  border:1px solid rgba(15,181,174,0.2);
+  pointer-events:none;
+}
+.speaker__image-wrap::after{
+  content:'';position:absolute;
+  top:10px;left:10px;right:-10px;bottom:-10px;
+  border-right:2px solid var(--teal);
+  border-bottom:2px solid var(--teal);
+  pointer-events:none;
+}
+.speaker__image-wrap img{
+  width:100%;display:block;
+  filter:grayscale(20%) contrast(1.05) hue-rotate(180deg) saturate(0.1);
+  position:relative;z-index:1;
+}
+.speaker__name{font-size:clamp(2rem,3vw,3rem);margin-bottom:0.3rem;}
+.speaker__role{
+  font-size:0.72rem;font-weight:600;letter-spacing:0.18em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:2rem;
+}
+.speaker__body{color:var(--muted);font-size:1rem;line-height:1.95;margin-bottom:1.5rem;}
+.speaker__body strong{color:var(--cream);font-weight:600;}
+.speaker__credentials{display:flex;flex-direction:column;gap:0.8rem;margin-top:2rem;}
+.speaker__cred{
+  display:flex;align-items:flex-start;gap:12px;
+  font-size:0.88rem;color:var(--muted);
+}
+.speaker__cred::before{content:'—';color:var(--teal);flex-shrink:0;margin-top:2px;}
+.speaker__quote{
+  font-family:var(--font-serif);
+  font-size:1.35rem;font-style:italic;
+  color:var(--cream);
+  padding:1.5rem 0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  margin-top:2rem;line-height:1.6;
+}
+
+/* ══════════════════════════════════════
+   TESTIMONIOS
+══════════════════════════════════════ */
+#testimonios{background:var(--navy2);}
+.testimonios__header{text-align:center;margin-bottom:5rem;}
+.testimonios__ratings{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5px;background:rgba(15,181,174,0.1);
+  margin-bottom:5rem;
+}
+.testimonios__rating-item{
+  background:var(--navy2);padding:2rem 1.5rem;text-align:center;
+}
+.testimonios__rating-event{
+  font-size:0.62rem;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:0.8rem;
+}
+.testimonios__rating-num{
+  font-family:var(--font-serif);font-size:2.8rem;color:var(--cream);line-height:1;
+}
+.testimonios__rating-stars{color:var(--teal);font-size:0.75rem;letter-spacing:3px;margin:0.4rem 0;}
+.testimonios__rating-count{font-size:0.68rem;color:var(--muted);}
+.testimonios__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.testimonios__card{
+  background:var(--navy3);
+  border:1px solid rgba(15,181,174,0.1);
+  padding:2rem;position:relative;
+  transition:border-color 0.3s;
+}
+.testimonios__card:hover{border-color:rgba(15,181,174,0.3);}
+.testimonios__card::before{
+  content:'\201C';
+  font-family:var(--font-serif);font-size:4rem;
+  color:rgba(15,181,174,0.15);
+  position:absolute;top:0.5rem;left:1.2rem;line-height:1;
+}
+.testimonios__quote{
+  font-family:var(--font-serif);font-size:1.05rem;font-style:italic;
+  color:var(--cream);line-height:1.7;padding-top:1.5rem;margin-bottom:1.5rem;
+}
+.testimonios__author{
+  font-size:0.68rem;font-weight:700;letter-spacing:0.12em;
+  text-transform:uppercase;color:var(--teal);
+}
+.testimonios__overall{
+  text-align:center;margin-top:4rem;
+  padding:3.5rem 2rem;
+  border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.testimonios__overall::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 100% at 50% 50%,rgba(15,181,174,0.04) 0%,transparent 70%);
+}
+.testimonios__overall-num{
+  font-family:var(--font-serif);font-size:5.5rem;color:var(--teal2);line-height:1;
+}
+.testimonios__overall-label{font-size:0.78rem;color:var(--muted);margin-top:0.5rem;}
+
+/* ══════════════════════════════════════
+   FORMATOS
+══════════════════════════════════════ */
+#formatos{background:var(--navy3);}
+.formatos__header{text-align:center;margin-bottom:5rem;}
+.formatos__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:rgba(15,181,174,0.1);}
+.formato{
+  background:var(--navy3);padding:3.5rem 2.5rem;
+  position:relative;overflow:hidden;
+  transition:background 0.3s;
+}
+.formato:hover{background:var(--navy4);}
+.formato--featured{background:linear-gradient(160deg,rgba(15,181,174,0.08),var(--navy3));}
+.formato__tag{
+  font-size:0.6rem;font-weight:700;letter-spacing:0.2em;
+  text-transform:uppercase;color:var(--teal);margin-bottom:1rem;
+}
+.formato__title{font-size:1.35rem;margin-bottom:0.5rem;}
+.formato__duration{
+  font-size:0.78rem;color:var(--muted);
+  margin-bottom:1.5rem;padding-bottom:1.5rem;
+  border-bottom:1px solid rgba(15,181,174,0.1);
+}
+.formato__desc{color:var(--muted);font-size:0.92rem;line-height:1.8;}
+.formato__badge{
+  display:inline-block;
+  margin-top:1.5rem;
+  font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--teal);
+  border:1px solid var(--border);
+  padding:0.4rem 0.8rem;
+}
+
+/* ══════════════════════════════════════
+   CTA
+══════════════════════════════════════ */
+#cta{
+  position:relative;overflow:hidden;
+  text-align:center;padding:9rem 2rem;
+}
+#cta::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 70% at 50% 50%,rgba(15,181,174,0.07) 0%,transparent 70%);
+}
+#cta::after{
+  content:'';position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:1px;height:120px;
+  background:linear-gradient(to bottom,transparent,var(--teal),transparent);
+}
+.cta__inner{position:relative;z-index:1;}
+.cta__title{margin-bottom:1rem;}
+.cta__subtitle{color:var(--muted);font-size:1.05rem;max-width:560px;margin:0 auto 3.5rem;line-height:1.85;}
+.cta__buttons{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;}
+.cta__btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--teal);color:#05101E;
+  font-family:var(--font-sans);font-size:0.8rem;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:1.2rem 2.5rem;text-decoration:none;
+  transition:background 0.2s,transform 0.2s;
+}
+.cta__btn-primary:hover{background:var(--teal2);transform:translateY(-2px);}
+.cta__btn-secondary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:transparent;color:var(--cream);
+  font-family:var(--font-sans);font-size:0.8rem;font-weight:500;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:1.2rem 2.5rem;text-decoration:none;
+  border:1px solid rgba(238,240,244,0.22);
+  transition:border-color 0.2s,color 0.2s;
+}
+.cta__btn-secondary:hover{border-color:var(--teal);color:var(--teal2);}
+.cta__detail{margin-top:2.5rem;font-size:0.78rem;color:rgba(138,150,168,0.5);}
+.cta__quote{
+  font-family:var(--font-serif);font-size:1.5rem;font-style:italic;
+  color:rgba(238,240,244,0.3);margin-bottom:3rem;
+  max-width:600px;margin-left:auto;margin-right:auto;
+  margin-bottom:4rem;
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer{
+  padding:2.5rem 2rem;
+  border-top:1px solid rgba(15,181,174,0.08);
+  text-align:center;
+}
+footer p{font-size:0.72rem;color:rgba(138,150,168,0.4);}
+
+
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:960px){
+  #hero{grid-template-columns:1fr;}
+  .hero__visual{min-height:50vw;max-height:380px;}
+  .hero__visual::before{background:linear-gradient(to top,var(--navy) 0%,transparent 60%);}
+  .hero__5x{font-size:clamp(6rem,18vw,10rem);}
+  .diag__grid,.speaker__grid{grid-template-columns:1fr;}
+  .dif__grid,.formatos__grid{grid-template-columns:1fr;}
+  .roi__grid{grid-template-columns:1fr;}
+  .testimonios__ratings{grid-template-columns:repeat(2,1fr);}
+  .testimonios__grid{grid-template-columns:1fr;}
+  .logos__label{width:100%;border-right:none;border-bottom:1px solid rgba(15,181,174,0.15);margin-bottom:1rem;padding-bottom:1rem;padding-right:0;margin-right:0;}
+}
+@media(max-width:600px){
+  h1{font-size:2.4rem;}
+  .section{padding:5rem 1.5rem;}
+  .modulo{grid-template-columns:60px 1fr;}
+  .modulo__content{padding:2.5rem 1.5rem;}
+  .testimonios__ratings{grid-template-columns:1fr;}
+  .cta__buttons{flex-direction:column;align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero__content reveal">
+    <div class="hero__badge">
+      <div class="hero__badge-line"></div>
+      <span>Conferencia Magistral</span>
+    </div>
+    <h1 class="hero__title">
+      <span class="line1">El Cerebro</span>
+      <span class="line2">que Decide</span>
+    </h1>
+    <p class="hero__subtitle">Neurociencia aplicada para pensar con claridad, decidir con criterio y actuar con propósito.</p>
+    <div class="hero__rating">
+      <span class="hero__rating-stars">★★★★★</span>
+      <span class="hero__rating-text"><strong>4.74 / 5</strong> — Promedio de +510 evaluaciones</span>
+    </div>
+    <a href="#cta" class="hero__cta">Agenda la conferencia <span class="hero__cta-arrow">→</span></a>
+  </div>
+
+  <!-- Portada de la conferencia -->
+  <div class="hero__visual">
+    <img src="https://mariocorrea.github.io/Portada_El_Cerebro_que_Decide.jpg"
+         alt="El Cerebro que Decide — Mario Correa"
+         style="width:100%;height:100%;object-fit:cover;object-position:center;display:block;">
+  </div>
+</section>
+
+<!-- ══ LOGOS ══ -->
+<div id="logos">
+  <div class="logos__inner">
+    <span class="logos__label">Han confiado en Mario</span>
+    <div class="logos__list">
+      <span class="logos__item">Asociación de Bancos de México</span>
+      <span class="logos__item">Mazda</span>
+      <span class="logos__item">CFO Day Monterrey</span>
+      <span class="logos__item">Cancham</span>
+      <span class="logos__item">Crevolution</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DIAGNÓSTICO ══ -->
+<section id="diagnostico" class="section">
+  <div class="container">
+    <div class="diag__grid">
+      <div class="reveal">
+        <span class="eyebrow">El diagnóstico</span>
+        <blockquote class="diag__quote">El problema no es la información — es la calidad del pensamiento con el que se procesa.</blockquote>
+        <div class="diag__stat">
+          <div class="diag__stat-number">20%</div>
+          <div class="diag__stat-label">del gasto energético total del cuerpo lo consume el cerebro. Y aun así, tiende a ahorrar energía cognitiva cuando más la necesitas.</div>
+        </div>
+        <div class="diag__stat">
+          <div class="diag__stat-number">5x</div>
+          <div class="diag__stat-label">El multiplicador de resultados cuando los 4 tipos de pensamiento se combinan en sinergia.</div>
+        </div>
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">El problema real</span>
+        <h2>Tu equipo tiene talento.<br>¿Por qué no está rindiendo?</h2>
+        <div class="divider"></div>
+        <p class="diag__body">Tienen experiencia, tienen acceso a la misma información que la competencia. Y sin embargo, <strong>las decisiones se toman tarde</strong>, los problemas se repiten y las ideas brillantes rara vez se vuelven resultados.</p>
+        <p class="diag__body">El pensamiento, a diferencia de lo que nos enseñaron, <strong>no es fijo. Es una habilidad que se desarrolla.</strong> Y el costo de no desarrollarla se mide en rotación, en errores repetidos, en oportunidades que nunca llegaron a ejecutarse.</p>
+        <p class="diag__body">Esta conferencia entrega algo más valioso que motivación: <strong>un sistema cognitivo completo, integrado y accionable.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SISTEMA 5x ══ -->
+<section id="modulos" class="section">
+  <div class="container">
+    <div class="modulos__header reveal">
+      <span class="eyebrow">Lo que tu equipo aprenderá</span>
+      <h2>El Sistema <span class="teal">5x</span></h2>
+      <p class="modulos__subtitle">Cuatro tipos de pensamiento que, al combinarse, no se suman — se multiplican. Más una herramienta de sinergia que los activa todos al mismo tiempo.</p>
+    </div>
+
+    <div class="modulos__list">
+
+      <div class="modulo reveal">
+        <div class="modulo__num-col"><span class="modulo__num">01</span></div>
+        <div class="modulo__content">
+          <div class="modulo__tag">El Hardware</div>
+          <h3 class="modulo__title">Cómo funciona tu cerebro</h3>
+          <p class="modulo__desc">Por qué el cerebro tiende a ahorrar energía y evitar el esfuerzo cognitivo — y cómo activarlo para pensar con más potencia <strong>exactamente cuando más lo necesitas</strong>. La base neurocientífica que explica por qué tomamos malas decisiones bajo presión.</p>
+        </div>
+      </div>
+
+      <div class="modulo reveal">
+        <div class="modulo__num-col"><span class="modulo__num">02</span></div>
+        <div class="modulo__content">
+          <div class="modulo__tag">Pensamiento Positivo</div>
+          <h3 class="modulo__title">El sistema operativo del pensamiento</h3>
+          <p class="modulo__desc">El locus de control interno, la mentalidad de crecimiento y el poder de las palabras como <strong>programadores del comportamiento</strong>. La base sin la cual los otros tipos de pensamiento no funcionan. Sin este módulo, todo lo demás es decoración.</p>
+        </div>
+      </div>
+
+      <div class="modulo reveal">
+        <div class="modulo__num-col"><span class="modulo__num">03</span></div>
+        <div class="modulo__content">
+          <div class="modulo__tag">Pensamiento Creativo</div>
+          <h3 class="modulo__title">Conectar puntos que otros no conectan</h3>
+          <p class="modulo__desc">La innovación como proceso sistemático, no como chispa mágica. <strong>Cómo generar ideas que sí funcionan en los negocios</strong> — y por qué la creatividad no es un talento innato sino una capacidad cognitiva que se entrena.</p>
+        </div>
+      </div>
+
+      <div class="modulo reveal">
+        <div class="modulo__num-col"><span class="modulo__num">04</span></div>
+        <div class="modulo__content">
+          <div class="modulo__tag">Pensamiento Crítico</div>
+          <h3 class="modulo__title">Encontrar la explicación verdadera</h3>
+          <p class="modulo__desc">No la más cómoda. Separar emociones del análisis y decidir con la información real disponible. Los sesgos cognitivos que cuestan dinero —  Kahneman, Sistema 1 y Sistema 2 — y <strong>cómo un economista conduce ese análisis.</strong></p>
+        </div>
+      </div>
+
+      <div class="modulo modulo--synergy reveal">
+        <div class="modulo__num-col"><span class="modulo__num">5x</span></div>
+        <div class="modulo__content">
+          <div class="modulo__tag">La Sinergia · TOP / PEP</div>
+          <h3 class="modulo__title">Cuando los 4 se combinan, no se suman — se multiplican</h3>
+          <p class="modulo__desc">La herramienta que activa esa sinergia es sorprendentemente simple: <strong>Pensar en Papel (PEP)</strong>. Plasmar tus pensamientos activa circuitos neuronales distintos al pensamiento interno, multiplicando la claridad y la calidad de tus decisiones. El participante sale con una herramienta que puede usar el lunes siguiente.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ DIFERENCIADORES ══ -->
+<section id="diferenciadores" class="section">
+  <div class="container">
+    <div class="dif__header reveal">
+      <span class="eyebrow">Por qué esta conferencia es única</span>
+      <h2>Lo que ningún otro conferencista<br>puede ofrecerte</h2>
+    </div>
+    <div class="dif__grid">
+      <div class="dif__item reveal">
+        <div class="dif__icon">①</div>
+        <div class="dif__label">Diferenciador #1</div>
+        <h3 class="dif__title">El economista que entiende el cerebro</h3>
+        <p class="dif__desc">Nadie más puede reclamar 35 años de análisis económico Y base neurocientífica rigurosa. Mario conecta el pensamiento individual con las consecuencias económicas de las decisiones — un marco que ningún coach ni motivador puede ofrecer.</p>
+      </div>
+      <div class="dif__item reveal">
+        <div class="dif__icon">②</div>
+        <div class="dif__label">Diferenciador #2</div>
+        <h3 class="dif__title">Herramientas, no inspiración</h3>
+        <p class="dif__desc">La audiencia sale con un sistema de 4 tipos de pensamiento + herramientas de aplicación inmediata. No con emoción que se olvida al día siguiente. El retorno sobre el tiempo invertido es medible.</p>
+      </div>
+      <div class="dif__item reveal">
+        <div class="dif__icon">③</div>
+        <div class="dif__label">Diferenciador #3</div>
+        <h3 class="dif__title">Humor + rigor científico</h3>
+        <p class="dif__desc">Evaluaciones de 4.74–4.91★ en más de 510 evaluaciones. Audiencias que califican alto porque aprenden Y se divierten. El educador que entretiene — sin sacrificar un gramo de profundidad.</p>
+      </div>
+      <div class="dif__item reveal">
+        <div class="dif__icon">④</div>
+        <div class="dif__label">Diferenciador #4</div>
+        <h3 class="dif__title">El complemento perfecto de la conferencia económica</h3>
+        <p class="dif__desc">Oferta única en el mercado: el mismo conferencista puede mapear el entorno económico Y desarrollar el pensamiento para navegarlo. <span class="gold-text">Combo de alto valor para convenciones de un día completo.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ROI ══ -->
+<section id="roi" class="section">
+  <div class="container">
+    <div class="roi__header reveal">
+      <span class="eyebrow">El retorno sobre la inversión</span>
+      <h2>Números que un directivo entiende</h2>
+      <p class="roi__source">Fuente: Google Proyecto Aristóteles · Universidad de Claremont · Investigación Kahneman</p>
+    </div>
+    <div class="roi__grid reveal">
+      <div class="roi__item">
+        <div class="roi__number">+50%</div>
+        <div class="roi__label">Productividad</div>
+        <div class="roi__sublabel">en equipos con alta seguridad psicológica y pensamiento sistémico</div>
+      </div>
+      <div class="roi__item">
+        <div class="roi__number">+76%</div>
+        <div class="roi__label">Engagement</div>
+        <div class="roi__sublabel">cuando los equipos desarrollan habilidades cognitivas colectivas</div>
+      </div>
+      <div class="roi__item">
+        <div class="roi__number">−27%</div>
+        <div class="roi__label">Rotación</div>
+        <div class="roi__sublabel">en organizaciones donde los líderes toman decisiones con mayor claridad</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SPEAKER ══ -->
+<section id="speaker" class="section">
+  <div class="container">
+    <div class="speaker__grid">
+      <div class="reveal">
+        <div class="speaker__image-wrap">
+          <!-- Placeholder para foto de Mario -->
+          <div style="width:100%;aspect-ratio:3/4;background:linear-gradient(160deg,var(--navy3),var(--navy4));display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:var(--font-serif);font-size:5rem;color:rgba(15,181,174,0.2);font-style:italic;">MC</span>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <span class="eyebrow">El Speaker</span>
+        <h2 class="speaker__name">Mario Correa</h2>
+        <p class="speaker__role">Economista · Maestro en Finanzas · Conferencista</p>
+        <div class="divider"></div>
+        <p class="speaker__body">Con <strong>35 años en la intersección de la economía, la neurociencia y el comportamiento humano</strong>, Mario no es un motivador tradicional. Es el guía intelectual que traduce la ciencia del cerebro en decisiones de negocio concretas.</p>
+        <p class="speaker__body">Su promesa es clara: tu equipo no saldrá con emoción que se olvida al día siguiente. Saldrá con <strong>un sistema cognitivo integrado y una herramienta que puede activar en la próxima reunión</strong>.</p>
+        <div class="speaker__credentials">
+          <div class="speaker__cred">Economista con Maestría en Finanzas · ITAM</div>
+          <div class="speaker__cred">10 años como Chief Economist de Scotiabank México</div>
+          <div class="speaker__cred">Experto en economía conductual, neurociencia aplicada y biología evolutiva</div>
+          <div class="speaker__cred">Conferencista en convenciones corporativas nacionales e internacionales</div>
+        </div>
+        <blockquote class="speaker__quote">"Tu cerebro no es tu límite — es tu mayor activo no desarrollado."</blockquote>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIOS ══ -->
+<section id="testimonios" class="section">
+  <div class="container">
+    <div class="testimonios__header reveal">
+      <span class="eyebrow">Prueba social</span>
+      <h2>Lo que dicen quienes lo vivieron</h2>
+    </div>
+
+    <div class="testimonios__ratings reveal">
+      <div class="testimonios__rating-item">
+        <div class="testimonios__rating-event">Asociación de Bancos de México</div>
+        <div class="testimonios__rating-num">4.80</div>
+        <div class="testimonios__rating-stars">★★★★★</div>
+        <div class="testimonios__rating-count">112 evaluaciones</div>
+      </div>
+      <div class="testimonios__rating-item">
+        <div class="testimonios__rating-event">Cancham 2024</div>
+        <div class="testimonios__rating-num">4.91</div>
+        <div class="testimonios__rating-stars">★★★★★</div>
+        <div class="testimonios__rating-count">34 evaluaciones</div>
+      </div>
+      <div class="testimonios__rating-item">
+        <div class="testimonios__rating-event">Crevolution 2024</div>
+        <div class="testimonios__rating-num">4.81</div>
+        <div class="testimonios__rating-stars">★★★★★</div>
+        <div class="testimonios__rating-count">43 evaluaciones</div>
+      </div>
+      <div class="testimonios__rating-item">
+        <div class="testimonios__rating-event">Mazda 2024</div>
+        <div class="testimonios__rating-num">4.70</div>
+        <div class="testimonios__rating-stars">★★★★★</div>
+        <div class="testimonios__rating-count">192 evaluaciones</div>
+      </div>
+      <div class="testimonios__rating-item">
+        <div class="testimonios__rating-event">CFO Day Monterrey</div>
+        <div class="testimonios__rating-num">4.70</div>
+        <div class="testimonios__rating-stars">★★★★★</div>
+        <div class="testimonios__rating-count">39 evaluaciones</div>
+      </div>
+      <div class="testimonios__rating-item">
+        <div class="testimonios__rating-event">Mazda Salamanca</div>
+        <div class="testimonios__rating-num">4.50</div>
+        <div class="testimonios__rating-stars">★★★★½</div>
+        <div class="testimonios__rating-count">90 evaluaciones</div>
+      </div>
+    </div>
+
+    <div class="testimonios__grid">
+      <div class="testimonios__card reveal">
+        <p class="testimonios__quote">"Hace divertido lo tedioso."</p>
+        <span class="testimonios__author">— Asistente · CFO Day IMEF Monterrey</span>
+      </div>
+      <div class="testimonios__card reveal">
+        <p class="testimonios__quote">"Exposición dinámica, divertida y fácil de comprender sobre un tema complejo."</p>
+        <span class="testimonios__author">— Asistente · ABM 2023</span>
+      </div>
+      <div class="testimonios__card reveal">
+        <p class="testimonios__quote">"Alto impacto para tomar decisiones."</p>
+        <span class="testimonios__author">— Asistente · Crevolution 2024</span>
+      </div>
+      <div class="testimonios__card reveal">
+        <p class="testimonios__quote">"A pesar de datos y cifras complicadas, siempre los acompaña con imágenes y ejemplos que los hacen entendibles."</p>
+        <span class="testimonios__author">— Asistente · Crevolution 2024</span>
+      </div>
+      <div class="testimonios__card reveal">
+        <p class="testimonios__quote">"Siempre me gusta escucharte porque los temas complejos los haces sencillos."</p>
+        <span class="testimonios__author">— Asistente · Mazda 2024</span>
+      </div>
+      <div class="testimonios__card reveal">
+        <p class="testimonios__quote">"Explica de forma sencilla conceptos económicos complejos. Muy buen expositor."</p>
+        <span class="testimonios__author">— Asistente · ABM 2023</span>
+      </div>
+    </div>
+
+    <div class="testimonios__overall reveal">
+      <div class="testimonios__overall-num">4.74 / 5</div>
+      <p class="testimonios__overall-label">Calificación promedio ponderada · Más de 510 evaluaciones en 6 eventos corporativos · SurveyMonkey</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FORMATOS ══ -->
+<section id="formatos" class="section">
+  <div class="container">
+    <div class="formatos__header reveal">
+      <span class="eyebrow">Formatos disponibles</span>
+      <h2>Diseñado para tu evento</h2>
+    </div>
+    <div class="formatos__grid reveal">
+      <div class="formato">
+        <div class="formato__tag">Formato 01</div>
+        <h3 class="formato__title">Conferencia Magistral</h3>
+        <div class="formato__duration">60 – 90 minutos</div>
+        <p class="formato__desc">Ideal para kick-offs directivos, convenciones anuales y eventos de liderazgo. Impacto máximo en tiempo reducido.</p>
+        <span class="formato__badge">Más solicitado</span>
+      </div>
+      <div class="formato formato--featured">
+        <div class="formato__tag">Formato 02</div>
+        <h3 class="formato__title">Taller Ejecutivo</h3>
+        <div class="formato__duration">Medio día · 4 horas</div>
+        <p class="formato__desc">Profundización práctica con ejercicios aplicados para equipos directivos. Los participantes desarrollan su perfil cognitivo y salen con un plan de acción personalizado.</p>
+        <span class="formato__badge">Alto valor percibido</span>
+      </div>
+      <div class="formato">
+        <div class="formato__tag">Formato 03</div>
+        <h3 class="formato__title">Combo Estratégico</h3>
+        <div class="formato__duration">Jornada completa</div>
+        <p class="formato__desc"><em>El Cerebro que Decide</em> + <em>El Mapa del Territorio</em> — jornada de alto impacto cognitivo y estratégico. El único conferencista que puede mapear el entorno económico Y desarrollar el pensamiento para navegarlo.</p>
+        <span class="formato__badge" style="border-color:var(--border-gold);color:var(--gold2);">Exclusivo</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section id="cta">
+  <div class="cta__inner container--narrow reveal">
+    <span class="eyebrow" style="display:block;text-align:center;">¿Listo para potenciar el pensamiento de tu equipo?</span>
+    <h2 class="cta__title">Lleva "El Cerebro que Decide"<br>a tu próxima convención</h2>
+    <p class="cta__subtitle">Conferencia magistral de 60–90 minutos. Ideal para convenciones anuales, kick-offs directivos y eventos de liderazgo. Honorario: $90,000 – $150,000 MXN.</p>
+    <div class="cta__buttons">
+      <a href="mailto:mario@mariocorrea.mx" class="cta__btn-primary">Agendar fecha para mi evento →</a>
+      <a href="https://wa.me/524464771187?text=Hola%20Mario%2C%20me%20interesa%20recibir%20información%20de%20la%20conferencia%20El%20Cerebro%20que%20Decide" class="cta__btn-secondary">Solicitar dossier</a>
+    </div>
+    <p class="cta__detail">mario@mariocorrea.mx · 44-6477-1187 · prosperidad.mx</p>
+    <p class="cta__detail" style="margin-top:1rem;">Disponible para convenciones empresariales · Talleres ejecutivos · Kick-offs directivos</p>
+  </div>
+</section>
+
+<footer>
+  <p>© Mario Correa — Todos los derechos reservados · prosperidad.mx</p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+    }
+  });
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
